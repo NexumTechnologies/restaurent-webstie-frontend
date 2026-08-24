@@ -2,21 +2,43 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { User, Mail, Phone, MapPin, Lock } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { AuthField } from '@/components/auth/auth-field'
+import { register } from '@/lib/api'
 
 export function RegisterForm() {
+  const router = useRouter()
   const [agreed, setAgreed] = React.useState(false)
-  const [submitting, setSubmitting] = React.useState(false)
+  const [formError, setFormError] = React.useState('')
+  const registerMutation = useMutation({
+    mutationFn: register,
+    onSuccess: ({ accessToken, user }) => {
+      window.localStorage.setItem('foodflow_access_token', accessToken)
+      window.localStorage.setItem('foodflow_user', JSON.stringify(user))
+      router.push('/')
+      router.refresh()
+    },
+  })
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!agreed) return
-    setSubmitting(true)
-    // TODO: connect to real authentication backend here.
-    await new Promise((resolve) => setTimeout(resolve, 700))
-    setSubmitting(false)
+    setFormError('')
+    if (!agreed) return setFormError('Please accept the Terms & Conditions and Privacy Policy.')
+    const formData = new FormData(event.currentTarget)
+    const password = String(formData.get('password') ?? '')
+    if (password !== String(formData.get('confirmPassword') ?? '')) {
+      return setFormError('Passwords do not match.')
+    }
+    registerMutation.mutate({
+      name: String(formData.get('fullName') ?? ''),
+      email: String(formData.get('email') ?? ''),
+      phone: String(formData.get('phone') ?? ''),
+      address: String(formData.get('address') ?? ''),
+      password,
+    })
   }
 
   return (
@@ -105,11 +127,16 @@ export function RegisterForm() {
 
         <Button
           type="submit"
-          disabled={!agreed || submitting}
+          disabled={registerMutation.isPending}
           className="h-11 w-full bg-brand text-brand-foreground [a]:hover:bg-brand/90 hover:bg-brand/90"
         >
-          {submitting ? 'Creating account…' : 'Register'}
+          {registerMutation.isPending ? 'Creating account...' : 'Register'}
         </Button>
+        {(formError || registerMutation.isError) && (
+          <p role="alert" className="text-sm text-destructive">
+            {formError || registerMutation.error.message}
+          </p>
+        )}
       </form>
 
       <p className="mt-6 text-center text-sm text-muted-foreground">

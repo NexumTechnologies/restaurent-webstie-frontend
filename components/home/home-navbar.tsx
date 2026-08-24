@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
-import { Menu, ShoppingCart, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { LogOut, Menu, Search, ShoppingCart, UserRound, X } from 'lucide-react'
+import { logout } from '@/lib/api'
 import { FoodFlowLogo } from '@/components/foodflow-logo'
 import { cn } from '@/lib/utils'
 
@@ -20,6 +21,35 @@ const navLinks = [
 export function HomeNavbar() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [userName, setUserName] = useState('')
+
+  useEffect(() => {
+    const readUser = () => {
+      try {
+        const storedUser = window.localStorage.getItem('foodflow_user')
+        setUserName(storedUser ? JSON.parse(storedUser).name ?? '' : '')
+      } catch {
+        setUserName('')
+      }
+    }
+
+    readUser()
+    window.addEventListener('storage', readUser)
+    return () => window.removeEventListener('storage', readUser)
+  }, [])
+
+  const initials = userName
+    ? userName.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
+    : 'U'
+
+  function handleLogout() {
+    logout().catch(() => undefined)
+    window.localStorage.removeItem('foodflow_access_token')
+    window.localStorage.removeItem('foodflow_user')
+    setUserName('')
+    setProfileOpen(false)
+  }
 
   const isActive = (href: string) => {
     if (href === '/') {
@@ -73,19 +103,20 @@ export function HomeNavbar() {
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link
-            href="/login"
-            className="hidden rounded-lg border border-white/25 px-4 py-2 text-sm font-medium text-navy-foreground transition-colors hover:bg-white/10 sm:inline-flex"
-          >
-            Login
-          </Link>
+          {!userName && (
+            <>
+              <Link href="/login" className="hidden rounded-lg border border-white/25 px-4 py-2 text-sm font-medium text-navy-foreground transition-colors hover:bg-white/10 sm:inline-flex">Login</Link>
+              <Link href="/register" className="hidden rounded-lg bg-teal px-4 py-2 text-sm font-semibold text-teal-foreground transition-colors hover:bg-teal/90 sm:inline-flex">Register</Link>
+            </>
+          )}
 
-          <Link
-            href="/register"
-            className="hidden rounded-lg bg-teal px-4 py-2 text-sm font-semibold text-teal-foreground transition-colors hover:bg-teal/90 sm:inline-flex"
+          <button
+            type="button"
+            aria-label="Search restaurants"
+            className="grid size-10 place-items-center rounded-full bg-white/10 text-navy-foreground transition-colors hover:bg-white/15"
           >
-            Register
-          </Link>
+            <Search className="size-5" aria-hidden="true" />
+          </button>
 
           <button
             type="button"
@@ -98,6 +129,37 @@ export function HomeNavbar() {
               2
             </span>
           </button>
+
+          {userName && (
+            <div className="relative">
+              <button
+                type="button"
+                aria-label={`Open ${userName} profile menu`}
+                aria-expanded={profileOpen}
+                onClick={() => setProfileOpen((value) => !value)}
+                className="grid size-10 place-items-center rounded-full bg-teal text-sm font-bold text-teal-foreground ring-2 ring-white/20 transition-transform hover:scale-105"
+              >
+                {initials}
+              </button>
+
+              {profileOpen && (
+                <div className="absolute right-0 top-12 z-50 w-48 rounded-xl border border-white/15 bg-navy p-1.5 shadow-xl">
+                  <div className="border-b border-white/10 px-3 py-2">
+                    <p className="truncate text-sm font-semibold text-navy-foreground">{userName}</p>
+                    <p className="text-xs text-navy-foreground/60">FoodFlow account</p>
+                  </div>
+                  <Link href="/profile" className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-navy-foreground/85 hover:bg-white/10 hover:text-navy-foreground" onClick={() => setProfileOpen(false)}>
+                    <UserRound className="size-4" aria-hidden="true" />
+                    View Profile
+                  </Link>
+                  <button type="button" onClick={handleLogout} className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm text-red-200 hover:bg-red-400/10">
+                    <LogOut className="size-4" aria-hidden="true" />
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           <button
             type="button"
@@ -148,21 +210,23 @@ export function HomeNavbar() {
               )
             })}
 
-            <div className="mt-2 flex gap-2">
-              <Link
-                href="/login"
-                className="flex-1 rounded-lg border border-white/25 px-4 py-2 text-center text-sm font-medium"
-              >
-                Login
-              </Link>
-
-              <Link
-                href="/register"
-                className="flex-1 rounded-lg bg-teal px-4 py-2 text-center text-sm font-semibold text-teal-foreground"
-              >
-                Register
-              </Link>
-            </div>
+            {userName ? (
+              <div className="mt-2 flex flex-col gap-1 rounded-lg bg-white/10 p-2">
+                <Link href="/profile" className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium hover:bg-white/10" onClick={() => setOpen(false)}>
+                  <UserRound className="size-4" aria-hidden="true" />
+                  View Profile
+                </Link>
+                <button type="button" onClick={handleLogout} className="flex items-center gap-2 rounded-lg px-2 py-2 text-left text-sm text-red-200 hover:bg-red-400/10">
+                  <LogOut className="size-4" aria-hidden="true" />
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="mt-2 flex gap-2">
+                <Link href="/login" className="flex-1 rounded-lg border border-white/25 px-4 py-2 text-center text-sm font-medium">Login</Link>
+                <Link href="/register" className="flex-1 rounded-lg bg-teal px-4 py-2 text-center text-sm font-semibold text-teal-foreground">Register</Link>
+              </div>
+            )}
           </nav>
         </div>
       )}
