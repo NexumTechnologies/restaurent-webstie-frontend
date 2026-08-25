@@ -44,11 +44,11 @@ const dishes: Dish[] = [
 export function PopularDishes() {
   return (
     <section className="mx-auto w-full max-w-6xl px-4 pt-14 sm:px-6">
-      <SectionHeader
-        title="Popular dishes"
-        subtitle="Most ordered meals this week."
-        viewAllHref="#restaurants"
-      />
+     <SectionHeader
+  title="Popular dishes"
+  subtitle="Popular choices people are ordering right now."
+  viewAllHref="/dishes"
+/>
 
       <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {dishes.map((dish) => (
