@@ -6,6 +6,7 @@ __v0_jsx-dev-runtime.ts
 .v0-trash/
 .vercel/
 
+temp_auto_push.bat
 # Environment variables
 .env*.local
 
@@ -13,3 +14,6 @@ __v0_jsx-dev-runtime.ts
 node_modules
 .next/
 .DS_Store
+config.bat
+.gitignore
+branch_structure.json
