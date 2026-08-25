@@ -246,7 +246,7 @@ export function CartPageContent() {
       {/* Page heading */}
       <div className="mb-7 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-4">
-          <div className="grid size-14 shrink-0 place-items-center rounded-xl bg-brand text-brand-foreground shadow-sm sm:size-[58px]">
+          <div className="grid size-14 shrink-0 place-items-center rounded-xl bg-teal text-brand-foreground shadow-sm sm:size-[58px]">
             <ShoppingCart className="size-7 sm:size-8" />
           </div>
 
@@ -262,7 +262,7 @@ export function CartPageContent() {
 
         <Link
           href="/restaurant/the-burger-house"
-          className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-brand px-5 py-3 text-sm font-bold text-brand transition-colors hover:bg-brand-muted sm:w-auto"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-teal px-5 py-3 text-sm font-bold text-teal transition-colors hover:bg-brand-muted sm:w-auto"
         >
           <ArrowLeft className="size-4" />
           Continue Shopping
@@ -274,7 +274,7 @@ export function CartPageContent() {
         <div className="min-w-0">
           {/* Restaurant card */}
           <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-            <div className="bg-brand-muted/70 p-4 sm:p-5">
+            <div className="bg-[#A5D6D6] p-4 sm:p-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <div className="relative size-20 shrink-0 overflow-hidden rounded-xl border border-border bg-black sm:size-[84px]">
                   <img
@@ -290,7 +290,7 @@ export function CartPageContent() {
                       The Burger House
                     </h2>
 
-                    <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
+                    <span className="rounded-full bg-teal px-3 py-1 text-xs font-bold text-white">
                       Open
                     </span>
                   </div>
@@ -402,7 +402,7 @@ export function CartPageContent() {
                           onClick={() =>
                             updateQuantity(item.id, item.quantity - 1)
                           }
-                          className="grid size-8 place-items-center text-brand transition-colors hover:bg-brand-muted"
+                          className="grid size-8 place-items-center text-teal transition-colors hover:bg-brand-muted"
                           aria-label={`Decrease ${item.name}`}
                         >
                           <Minus className="size-4" />
@@ -417,7 +417,7 @@ export function CartPageContent() {
                           onClick={() =>
                             updateQuantity(item.id, item.quantity + 1)
                           }
-                          className="grid size-8 place-items-center text-brand transition-colors hover:bg-brand-muted"
+                          className="grid size-8 place-items-center text-teal transition-colors hover:bg-brand-muted"
                           aria-label={`Increase ${item.name}`}
                         >
                           <Plus className="size-4" />
@@ -469,7 +469,7 @@ export function CartPageContent() {
                 <p className="text-xs font-medium text-muted-foreground sm:text-sm">
                   Estimated Delivery Time
                 </p>
-                <p className="mt-0.5 font-display text-xl font-extrabold text-brand">
+                <p className="mt-0.5 font-display text-xl font-extrabold text-teal">
                   30 – 40 min
                 </p>
               </div>
@@ -477,7 +477,7 @@ export function CartPageContent() {
 
             <button
               type="button"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-brand px-4 py-2.5 text-sm font-bold text-brand transition-colors hover:bg-brand-muted"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-teal px-4 py-2.5 text-sm font-bold text-teal transition-colors hover:bg-brand-muted"
             >
               <Tag className="size-4" />
               Add Special Instructions
@@ -536,10 +536,10 @@ export function CartPageContent() {
                     <button
                       type="button"
                       onClick={() => addRecommendation(item)}
-                      className="mt-3 flex w-full items-center justify-between rounded-lg border border-brand px-3 py-2 text-sm font-bold text-brand transition-colors hover:bg-brand-muted"
+                      className="mt-3 flex w-full items-center justify-between rounded-lg border border-teal px-3 py-2 text-sm font-bold text-teal transition-colors hover:bg-brand-muted"
                     >
                       <span>Add</span>
-                      <span className="grid size-5 place-items-center rounded-full border border-brand">
+                      <span className="grid size-5 place-items-center rounded-full border border-teal">
                         <Plus className="size-3" />
                       </span>
                     </button>
@@ -592,7 +592,7 @@ export function CartPageContent() {
               <div className="border-t border-dashed border-border pt-4">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Discount</span>
-                  <span className="font-bold text-brand">
+                  <span className="font-bold text-teal">
                     – {formatPKR(discount)}
                   </span>
                 </div>
@@ -603,17 +603,17 @@ export function CartPageContent() {
                   <span className="font-display text-lg font-extrabold">
                     Total
                   </span>
-                  <span className="font-display text-xl font-extrabold text-brand">
+                  <span className="font-display text-xl font-extrabold text-teal">
                     {formatPKR(total)}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 rounded-lg border border-brand/20 bg-brand-muted px-3 py-3">
+              <div className="flex items-start gap-3 rounded-lg border border-teal bg-brand-muted px-3 py-3">
                 <ShieldCheck className="mt-0.5 size-5 shrink-0 text-brand" />
 
                 <div className="text-sm">
-                  <p className="font-bold text-brand">
+                  <p className="font-bold text-teal">
                     You are saving {formatPKR(discount)}
                   </p>
                   <p className="mt-0.5 text-brand-dark/80">
@@ -624,7 +624,7 @@ export function CartPageContent() {
 
             <Link
   href="/checkout"
-  className="flex w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 py-3.5 text-sm font-extrabold text-brand-foreground transition-colors hover:bg-brand/90"
+  className="flex w-full items-center justify-center gap-2 rounded-lg bg-teal px-4 py-3.5 text-sm font-extrabold text-brand-foreground transition-colors"
 >
   Proceed to Checkout
   <ArrowRight className="size-4" />
