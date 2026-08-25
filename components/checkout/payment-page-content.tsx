@@ -445,7 +445,7 @@ export function PaymentPageContent() {
       </section>
 
       {/* Restaurant banner */}
-      <section className="overflow-hidden rounded-xl border border-border bg-brand-muted/40">
+      <section className="overflow-hidden rounded-xl border border-border bg-teal-muted/40">
         <div className="flex flex-col gap-5 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
           <div className="flex min-w-0 items-center gap-4">
             <div className="size-[82px] shrink-0 overflow-hidden rounded-lg bg-black sm:size-[98px]">
@@ -462,7 +462,7 @@ export function PaymentPageContent() {
                   {RESTAURANT.name}
                 </h1>
 
-                <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
+                <span className="rounded-full bg-teal/10 px-3 py-1 text-xs font-bold text-teal">
                   Open
                 </span>
               </div>
@@ -512,7 +512,7 @@ export function PaymentPageContent() {
                 </h2>
 
                 <p className="mt-2 flex items-center gap-2 text-xs text-muted-foreground sm:text-sm">
-                  <ShieldCheck className="size-4 text-brand" />
+                  <ShieldCheck className="size-4 text-teal" />
                   All transactions are secure and encrypted
                 </p>
               </div>
@@ -566,7 +566,7 @@ export function PaymentPageContent() {
                           }))
                         }
                         placeholder="1234 5678 9012 3456"
-                        className="mt-1.5 h-10 w-full rounded-lg border border-border bg-card px-3 pr-11 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
+                        className="mt-1.5 h-10 w-full rounded-lg border border-border bg-card px-3 pr-11 text-sm outline-none focus:border-teal focus:ring-2 focus:ring-brand/15"
                       />
 
                       <CreditCard className="absolute right-3 top-4 size-4 text-muted-foreground" />
@@ -588,7 +588,7 @@ export function PaymentPageContent() {
                               event.target.value,
                           }))
                         }
-                        className="mt-1.5 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
+                        className="mt-1.5 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-teal focus:ring-2 focus:ring-brand/15"
                       />
                     </div>
 
@@ -609,7 +609,7 @@ export function PaymentPageContent() {
                           }))
                         }
                         placeholder="MM / YY"
-                        className="mt-1.5 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
+                        className="mt-1.5 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-teal focus:ring-2 focus:ring-brand/15"
                       />
                     </div>
 
@@ -630,7 +630,7 @@ export function PaymentPageContent() {
                           }))
                         }
                         placeholder="123"
-                        className="mt-1.5 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
+                        className="mt-1.5 h-10 w-full rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-teal focus:ring-2 focus:ring-brand/15"
                       />
                     </div>
                   </div>
@@ -708,11 +708,11 @@ export function PaymentPageContent() {
               </div>
             )}
 
-            <div className="mt-4 flex items-start gap-3 rounded-lg border border-brand/15 bg-brand-muted px-3 py-3">
-              <ShieldCheck className="mt-0.5 size-5 shrink-0 text-brand" />
+            <div className="mt-4 flex items-start gap-3 rounded-lg border border-teal/15 bg-teal-muted px-3 py-3">
+              <ShieldCheck className="mt-0.5 size-5 shrink-0 text-teal" />
 
               <div>
-                <p className="text-sm font-bold text-brand-dark">
+                <p className="text-sm font-bold text-teal-dark">
                   Secure & Safe Payments
                 </p>
 
@@ -803,15 +803,15 @@ export function PaymentPageContent() {
                 Total
               </span>
 
-              <span className="font-display text-xl font-extrabold text-brand">
+              <span className="font-display text-xl font-extrabold text-teal">
                 {money(total)}
               </span>
             </div>
 
-            <div className="mt-4 flex items-start gap-3 rounded-lg border border-brand/15 bg-brand-muted px-3 py-3">
-              <Tag className="mt-0.5 size-5 shrink-0 text-brand" />
+            <div className="mt-4 flex items-start gap-3 rounded-lg border border-teal/15 bg-teal-muted px-3 py-3">
+              <Tag className="mt-0.5 size-5 shrink-0 text-teal" />
 
-              <div className="text-sm text-brand-dark">
+              <div className="text-sm text-teal-dark">
                 <p className="font-bold">
                   You are saving{' '}
                   {money(
@@ -832,7 +832,7 @@ export function PaymentPageContent() {
               type="button"
               onClick={handlePayNow}
               disabled={paying}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 py-3.5 text-sm font-extrabold text-brand-foreground transition hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-70"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-teal px-4 py-3.5 text-sm font-extrabold text-teal-foreground transition hover:bg-teal/90 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {paying ? (
                 <>
@@ -870,13 +870,13 @@ export function PaymentPageContent() {
                   setPromo(event.target.value)
                 }
                 placeholder="Enter promo code"
-                className="h-10 min-w-0 flex-1 rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
+                className="h-10 min-w-0 flex-1 rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-teal focus:ring-2 focus:ring-brand/15"
               />
 
               <button
                 type="button"
                 onClick={applyPromo}
-                className="h-10 rounded-lg border border-brand px-4 text-sm font-bold text-brand transition hover:bg-brand-muted"
+                className="h-10 rounded-lg border border-teal px-4 text-sm font-bold text-teal transition hover:bg-teal-muted"
               >
                 Apply
               </button>
@@ -886,7 +886,7 @@ export function PaymentPageContent() {
               <p
                 className={`mt-2 text-xs ${
                   promoApplied
-                    ? 'text-brand'
+                    ? 'text-teal'
                     : 'text-red-500'
                 }`}
               >
@@ -898,7 +898,7 @@ export function PaymentPageContent() {
       </div>
 
       {/* Delivery information */}
-      <section className="mt-5 rounded-xl border border-border bg-brand-muted/55 p-4 sm:p-5">
+      <section className="mt-5 rounded-xl border border-border bg-teal-muted/55 p-4 sm:p-5">
         <div className="grid gap-5 md:grid-cols-2">
           <div className="flex items-center gap-4 border-b border-border pb-4 md:border-b-0 md:border-r md:pb-0 md:pr-5">
             <div className="text-4xl">🛵</div>
@@ -908,7 +908,7 @@ export function PaymentPageContent() {
                 Estimated Delivery Time
               </p>
 
-              <p className="mt-1 font-display text-xl font-extrabold text-brand">
+              <p className="mt-1 font-display text-xl font-extrabold text-teal">
                 30 – 40 min
               </p>
 
@@ -919,7 +919,7 @@ export function PaymentPageContent() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="grid size-14 shrink-0 place-items-center rounded-full bg-card text-brand">
+            <div className="grid size-14 shrink-0 place-items-center rounded-full bg-card text-teal">
               <Clock3 className="size-7" />
             </div>
 
@@ -938,7 +938,7 @@ export function PaymentPageContent() {
 
               <Link
                 href="/checkout"
-                className="mt-1 inline-block text-xs font-bold text-brand hover:underline"
+                className="mt-1 inline-block text-xs font-bold text-teal hover:underline"
               >
                 Change Address
               </Link>
@@ -1004,7 +1004,7 @@ function Step({
         className={[
           'grid size-8 place-items-center rounded-full border text-xs font-bold sm:size-9 sm:text-sm',
           done || active
-            ? 'border-brand bg-brand text-brand-foreground'
+            ? 'border-teal bg-teal text-teal-foreground'
             : 'border-border bg-card text-foreground',
         ].join(' ')}
       >
@@ -1034,7 +1034,7 @@ function StepLine({
     <div
       className={[
         'mt-4 h-0.5 flex-1 rounded-full',
-        active ? 'bg-brand' : 'bg-border',
+        active ? 'bg-teal' : 'bg-border',
       ].join(' ')}
     />
   )
@@ -1062,7 +1062,7 @@ function PaymentMethodRow({
       className={[
         'flex w-full items-center gap-3 rounded-lg border px-3 py-3.5 text-left transition sm:px-4',
         selected
-          ? 'border-brand bg-brand-muted/45'
+          ? 'border-teal bg-teal-muted/45'
           : 'border-border hover:bg-muted/50',
       ].join(' ')}
     >
@@ -1070,12 +1070,12 @@ function PaymentMethodRow({
         className={[
           'grid size-6 shrink-0 place-items-center rounded-full border',
           selected
-            ? 'border-brand'
+            ? 'border-teal'
             : 'border-border',
         ].join(' ')}
       >
         {selected && (
-          <span className="size-2.5 rounded-full bg-brand" />
+          <span className="size-2.5 rounded-full bg-teal" />
         )}
       </span>
 
@@ -1083,7 +1083,7 @@ function PaymentMethodRow({
         className={[
           'grid size-10 shrink-0 place-items-center rounded-full',
           selected
-            ? 'bg-brand text-brand-foreground'
+            ? 'bg-teal text-teal-foreground'
             : 'bg-muted text-foreground',
         ].join(' ')}
       >
@@ -1100,7 +1100,7 @@ function PaymentMethodRow({
         </span>
       </span>
 
-      <span className="shrink-0 text-xs font-extrabold text-brand sm:text-sm">
+      <span className="shrink-0 text-xs font-extrabold text-teal sm:text-sm">
         {badge}
       </span>
     </button>
@@ -1131,7 +1131,7 @@ function SummaryRow({
       <span
         className={
           highlight
-            ? 'font-bold text-brand'
+            ? 'font-bold text-teal'
             : 'font-bold'
         }
       >
@@ -1152,7 +1152,7 @@ function Benefit({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="grid size-12 shrink-0 place-items-center rounded-full border border-brand/25 bg-brand-muted text-brand">
+      <div className="grid size-12 shrink-0 place-items-center rounded-full border border-teal/25 bg-teal-muted text-teal">
         {icon}
       </div>
 

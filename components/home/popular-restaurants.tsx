@@ -47,11 +47,11 @@ export function PopularRestaurants() {
       id="restaurants"
       className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 pt-14 sm:px-6"
     >
-      <SectionHeader
-        title="Popular restaurants"
-        subtitle="Top-rated places near you."
-        viewAllHref="#restaurants"
-      />
+     <SectionHeader
+  title="Popular restaurants"
+  subtitle="Top-rated places near you."
+  viewAllHref="/restaurants"
+/>
 
       <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {restaurants.map((r) => (
