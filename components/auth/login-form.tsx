@@ -79,7 +79,7 @@ export function LoginForm() {
         <Button
           type="submit"
           disabled={loginMutation.isPending}
-          className="h-11 w-full bg-brand text-brand-foreground [a]:hover:bg-brand/90 hover:bg-brand/90"
+          className="h-11 w-full bg-teal text-brand-foreground "
         >
           {loginMutation.isPending ? 'Logging in...' : 'Login'}
         </Button>
