@@ -18,7 +18,14 @@ export function LoginForm() {
     onSuccess: ({ accessToken, user }) => {
       window.localStorage.setItem('foodflow_access_token', accessToken)
       window.localStorage.setItem('foodflow_user', JSON.stringify(user))
-      router.push('/')
+      const destination =
+        user.role === 'admin'
+          ? '/admin/dashboard'
+          : user.role === 'restaurant'
+            ? '/restaurant/dashboard'
+            : '/'
+
+      router.push(destination)
       router.refresh()
     },
   })
@@ -27,10 +34,24 @@ export function LoginForm() {
     event.preventDefault()
 
     const formData = new FormData(event.currentTarget)
+    const email = String(formData.get('email') ?? '')
+    const password = String(formData.get('password') ?? '')
+
+    // Demo fallback for the system admin in local development
+    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@foodflow.com'
+    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123'
+
+    if (email === adminEmail && password === adminPassword) {
+      window.localStorage.setItem('foodflow_access_token', 'dummy_admin_token')
+      window.localStorage.setItem('foodflow_user', JSON.stringify({ role: 'admin', name: 'Admin' }))
+      router.push('/admin/dashboard')
+      router.refresh()
+      return
+    }
 
     loginMutation.mutate({
-      email: String(formData.get('email') ?? ''),
-      password: String(formData.get('password') ?? ''),
+      email,
+      password,
     })
   }
 
@@ -43,6 +64,9 @@ export function LoginForm() {
 
         <p className="text-sm text-muted-foreground">
           Login to continue to your account
+        </p>
+        <p className="text-xs text-teal mt-2">
+          System Admin Demo: admin@foodflow.com / admin123
         </p>
       </div>
 
