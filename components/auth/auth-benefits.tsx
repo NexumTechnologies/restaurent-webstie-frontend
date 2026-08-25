@@ -38,7 +38,7 @@ export function AuthBenefits() {
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-x-6 gap-y-6 px-4 py-8 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
         {benefits.map(({ icon: Icon, title, description }) => (
           <div key={title} className="flex items-start gap-3">
-            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand-muted text-brand">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-teal text-white">
               <Icon className="size-5" aria-hidden="true" />
             </span>
             <div className="flex flex-col gap-0.5">

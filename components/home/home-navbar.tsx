@@ -14,8 +14,8 @@ const navLinks = [
     label: 'Restaurants',
     href: '/restaurant/the-burger-house',
   },
-  { label: 'About', href: '#how-it-works' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'About', href: '/about' } ,
+  { label: 'Contact', href: '/contact' },
 ]
 
 export function HomeNavbar() {
@@ -118,17 +118,17 @@ export function HomeNavbar() {
             <Search className="size-5" aria-hidden="true" />
           </button>
 
-          <button
-            type="button"
-            aria-label="View cart, 2 items"
-            className="relative grid size-10 place-items-center rounded-full bg-white/10 text-navy-foreground transition-colors hover:bg-white/15"
-          >
-            <ShoppingCart className="size-5" aria-hidden="true" />
+      <Link
+  href="/cart"
+  aria-label="View cart, 2 items"
+  className="relative grid size-10 place-items-center rounded-full bg-white/10 text-navy-foreground transition-colors hover:bg-white/15"
+>
+  <ShoppingCart className="size-5" aria-hidden="true" />
 
-            <span className="absolute -right-0.5 -top-0.5 grid size-5 place-items-center rounded-full bg-teal text-[11px] font-bold text-teal-foreground">
-              2
-            </span>
-          </button>
+  <span className="absolute -right-0.5 -top-0.5 grid size-5 place-items-center rounded-full bg-teal text-[11px] font-bold text-teal-foreground">
+    2
+  </span>
+</Link>
 
           {userName && (
             <div className="relative">

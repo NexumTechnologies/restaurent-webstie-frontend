@@ -12,6 +12,7 @@ import { login } from '@/lib/api'
 
 export function LoginForm() {
   const router = useRouter()
+
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: ({ accessToken, user }) => {
@@ -24,7 +25,9 @@ export function LoginForm() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
     const formData = new FormData(event.currentTarget)
+
     loginMutation.mutate({
       email: String(formData.get('email') ?? ''),
       password: String(formData.get('password') ?? ''),
@@ -37,6 +40,7 @@ export function LoginForm() {
         <h2 className="font-display text-2xl font-bold text-foreground">
           Welcome Back!
         </h2>
+
         <p className="text-sm text-muted-foreground">
           Login to continue to your account
         </p>
@@ -63,9 +67,10 @@ export function LoginForm() {
             required
             password
           />
+
           <Link
             href="#"
-            className="self-end text-sm font-medium text-brand hover:underline"
+            className="self-end text-sm font-medium text-teal hover:underline"
           >
             Forgot Password?
           </Link>
@@ -78,6 +83,7 @@ export function LoginForm() {
         >
           {loginMutation.isPending ? 'Logging in...' : 'Login'}
         </Button>
+
         {loginMutation.isError && (
           <p role="alert" className="text-sm text-destructive">
             {loginMutation.error.message}
@@ -87,7 +93,9 @@ export function LoginForm() {
 
       <div className="my-5 flex items-center gap-3">
         <span className="h-px flex-1 bg-border" />
-        <span className="text-xs text-muted-foreground">or continue with</span>
+        <span className="text-xs text-muted-foreground">
+          or continue with
+        </span>
         <span className="h-px flex-1 bg-border" />
       </div>
 
@@ -95,7 +103,10 @@ export function LoginForm() {
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="font-semibold text-brand hover:underline">
+        <Link
+          href="/register"
+          className="font-semibold text-teal hover:underline"
+        >
           Sign Up
         </Link>
       </p>

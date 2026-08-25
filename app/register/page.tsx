@@ -6,7 +6,7 @@ export default function RegisterPage() {
     <AuthLayout
       brandTitle={
         <>
-          Create Your <span className="text-brand">Account</span>
+          Create Your <span className="text-teal">Account</span>
         </>
       }
       brandDescription="Join FoodFlow and enjoy delicious meals delivered to your door. It's quick, easy and hassle-free."

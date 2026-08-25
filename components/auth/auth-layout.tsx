@@ -2,7 +2,7 @@
 
 import { motion } from 'motion/react'
 import { Navbar } from '@/components/layout/navbar'
-import { Footer } from '@/components/layout/footer'
+import { SiteFooter } from '@/components/home/site-footer'
 import { AuthBenefits } from '@/components/auth/auth-benefits'
 import { AuthBrandPanel } from '@/components/auth/auth-brand-panel'
 
@@ -37,7 +37,7 @@ export function AuthLayout({
       </main>
 
       <AuthBenefits />
-      <Footer />
+      <SiteFooter />
     </div>
   )
 }

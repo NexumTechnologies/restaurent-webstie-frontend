@@ -13,6 +13,7 @@ export function RegisterForm() {
   const router = useRouter()
   const [agreed, setAgreed] = React.useState(false)
   const [formError, setFormError] = React.useState('')
+
   const registerMutation = useMutation({
     mutationFn: register,
     onSuccess: ({ accessToken, user }) => {
@@ -26,12 +27,20 @@ export function RegisterForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setFormError('')
-    if (!agreed) return setFormError('Please accept the Terms & Conditions and Privacy Policy.')
+
+    if (!agreed) {
+      return setFormError(
+        'Please accept the Terms & Conditions and Privacy Policy.'
+      )
+    }
+
     const formData = new FormData(event.currentTarget)
     const password = String(formData.get('password') ?? '')
+
     if (password !== String(formData.get('confirmPassword') ?? '')) {
       return setFormError('Passwords do not match.')
     }
+
     registerMutation.mutate({
       name: String(formData.get('fullName') ?? ''),
       email: String(formData.get('email') ?? ''),
@@ -47,6 +56,7 @@ export function RegisterForm() {
         <h2 className="font-display text-2xl font-bold text-foreground">
           Join FoodFlow
         </h2>
+
         <p className="text-sm text-muted-foreground">
           Register to start ordering your favourite food.
         </p>
@@ -61,6 +71,7 @@ export function RegisterForm() {
           autoComplete="name"
           required
         />
+
         <AuthField
           id="email"
           label="Email Address"
@@ -70,6 +81,7 @@ export function RegisterForm() {
           autoComplete="email"
           required
         />
+
         <AuthField
           id="phone"
           label="Phone Number"
@@ -79,6 +91,7 @@ export function RegisterForm() {
           autoComplete="tel"
           required
         />
+
         <AuthField
           id="address"
           label="Address"
@@ -87,6 +100,7 @@ export function RegisterForm() {
           autoComplete="street-address"
           required
         />
+
         <AuthField
           id="password"
           label="Password"
@@ -96,6 +110,7 @@ export function RegisterForm() {
           required
           password
         />
+
         <AuthField
           id="confirmPassword"
           label="Confirm Password"
@@ -113,13 +128,20 @@ export function RegisterForm() {
             onChange={(e) => setAgreed(e.target.checked)}
             className="mt-0.5 size-4 shrink-0 rounded border-border text-brand accent-brand focus-visible:ring-2 focus-visible:ring-brand/30"
           />
+
           <span>
             I agree to the{' '}
-            <Link href="#" className="font-medium text-brand hover:underline">
+            <Link
+              href="#"
+              className="font-medium text-teal hover:underline"
+            >
               Terms &amp; Conditions
             </Link>{' '}
             and{' '}
-            <Link href="#" className="font-medium text-brand hover:underline">
+            <Link
+              href="#"
+              className="font-medium text-teal hover:underline"
+            >
               Privacy Policy
             </Link>
           </span>
@@ -127,11 +149,12 @@ export function RegisterForm() {
 
         <Button
           type="submit"
-          disabled={registerMutation.isPending}
+          disabled={!agreed || registerMutation.isPending}
           className="h-11 w-full bg-brand text-brand-foreground [a]:hover:bg-brand/90 hover:bg-brand/90"
         >
           {registerMutation.isPending ? 'Creating account...' : 'Register'}
         </Button>
+
         {(formError || registerMutation.isError) && (
           <p role="alert" className="text-sm text-destructive">
             {formError || registerMutation.error.message}
@@ -141,7 +164,10 @@ export function RegisterForm() {
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Already have an account?{' '}
-        <Link href="/login" className="font-semibold text-brand hover:underline">
+        <Link
+          href="/login"
+          className="font-semibold text-teal hover:underline"
+        >
           Login
         </Link>
       </p>

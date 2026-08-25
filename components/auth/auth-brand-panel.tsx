@@ -34,9 +34,9 @@ export function AuthBrandPanel({ title, description }: AuthBrandPanelProps) {
       initial={{ opacity: 0, x: -16 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="flex flex-col"
+      className="flex flex-col "
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 ">
         <h1 className="font-display text-3xl leading-tight font-extrabold text-balance text-foreground sm:text-4xl">
           {title}
         </h1>
@@ -45,13 +45,13 @@ export function AuthBrandPanel({ title, description }: AuthBrandPanelProps) {
         </p>
       </div>
 
-      <div className="mt-6 flex flex-col gap-4">
+      <div className="mt-6 flex flex-col gap-4 ">
         {features.map((feature) => (
           <AuthFeature key={feature.title} {...feature} />
         ))}
       </div>
 
-      <div className="relative mt-8">
+      <div className="relative mt-8 ">
         {/* decorative pale-green organic shape behind the food image */}
         <div
           aria-hidden="true"
@@ -59,7 +59,7 @@ export function AuthBrandPanel({ title, description }: AuthBrandPanelProps) {
         />
         <div className="relative mx-auto aspect-[16/10] w-full max-w-md overflow-hidden rounded-2xl">
           <Image
-            src="/images/foodflow-burger.png"
+            src="/images/foof.png"
             alt="A gourmet cheeseburger served with crispy golden fries and dipping sauce"
             fill
             priority
