@@ -1,5 +1,5 @@
 import { HomeNavbar } from '@/components/home/home-navbar'
-import { Footer } from '@/components/layout/footer'
+import { SiteFooter } from '@/components/home/site-footer'
 import { OrderTrackingPageContent } from '@/components/checkout/order-tracking-page-content'
 
 export default function OrderTrackingPage() {
@@ -11,7 +11,7 @@ export default function OrderTrackingPage() {
         <OrderTrackingPageContent />
       </main>
 
-      <Footer />
+      <SiteFooter />
     </div>
   )
 }

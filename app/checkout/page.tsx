@@ -1,5 +1,5 @@
 import { HomeNavbar } from '@/components/home/home-navbar'
-import { Footer } from '@/components/layout/footer'
+import { SiteFooter } from '@/components/home/site-footer'
 import { CheckoutPageContent } from '@/components/checkout/checkout-page-content'
 
 export default function CheckoutPage() {
@@ -11,7 +11,7 @@ export default function CheckoutPage() {
         <CheckoutPageContent />
       </main>
 
-      <Footer />
+      <SiteFooter />
     </div>
   )
 }

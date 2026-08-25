@@ -422,7 +422,7 @@ export function ConfirmationPageContent() {
       </section>
 
       {/* Success Hero */}
-      <section className="overflow-hidden rounded-xl border border-border bg-brand-muted/40">
+      <section className="overflow-hidden rounded-xl border border-border bg-teal-muted/40">
         <div className="grid min-h-[210px] items-center gap-6 px-5 py-7 sm:px-8 lg:grid-cols-[1fr_360px]">
           <div className="flex items-center gap-5 sm:gap-7">
             {/* Success icon */}
@@ -432,7 +432,7 @@ export function ConfirmationPageContent() {
                   •
                 </span>
 
-                <span className="absolute right-1 top-2 text-2xl text-brand">
+                <span className="absolute right-1 top-2 text-2xl text-teal">
                   •
                 </span>
 
@@ -445,14 +445,14 @@ export function ConfirmationPageContent() {
                 </span>
               </div>
 
-              <div className="grid size-28 place-items-center rounded-full bg-brand shadow-lg shadow-brand/20">
-                <Check className="size-16 text-brand-foreground" />
+              <div className="grid size-28 place-items-center rounded-full bg-teal shadow-lg shadow-brand/20">
+                <Check className="size-16 text-teal-foreground" />
               </div>
             </div>
 
             <div className="min-w-0">
-              <div className="mb-3 grid size-16 place-items-center rounded-full bg-brand shadow-sm sm:hidden">
-                <Check className="size-9 text-brand-foreground" />
+              <div className="mb-3 grid size-16 place-items-center rounded-full bg-teal shadow-sm sm:hidden">
+                <Check className="size-9 text-teal-foreground" />
               </div>
 
               <h1 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl lg:text-4xl">
@@ -468,7 +468,7 @@ export function ConfirmationPageContent() {
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                <Link
   href="/checkout/tracking"
-  className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-extrabold text-brand-foreground transition hover:bg-brand/90"
+  className="inline-flex items-center justify-center gap-2 rounded-lg bg-teal px-5 py-3 text-sm font-extrabold text-teal-foreground transition hover:bg-teal/90"
 >
   <Truck className="size-4" />
   Track Your Order
@@ -476,7 +476,7 @@ export function ConfirmationPageContent() {
 
                 <Link
                   href="/"
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-brand bg-card px-5 py-3 text-sm font-extrabold text-foreground transition hover:bg-brand-muted"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-teal bg-card px-5 py-3 text-sm font-extrabold text-foreground transition hover:bg-teal-muted"
                 >
                   <Home className="size-4" />
                   Go to Home
@@ -490,17 +490,17 @@ export function ConfirmationPageContent() {
             <div className="absolute inset-0">
               <div className="absolute right-8 top-3 size-12 rounded-full bg-white/80" />
               <div className="absolute right-24 top-10 size-20 rounded-full bg-white/70" />
-              <div className="absolute bottom-1 left-3 h-16 w-80 rounded-full bg-brand/10 blur-xl" />
+              <div className="absolute bottom-1 left-3 h-16 w-80 rounded-full bg-teal/10 blur-xl" />
             </div>
 
             <div className="absolute bottom-4 right-4">
               <div className="relative">
-                <div className="absolute -top-8 right-8 grid size-12 place-items-center rounded-full bg-brand text-brand-foreground shadow-md">
+                <div className="absolute -top-8 right-8 grid size-12 place-items-center rounded-full bg-teal text-teal-foreground shadow-md">
                   <MapPin className="size-6" />
                 </div>
 
                 <div className="flex items-end gap-2">
-                  <div className="rounded-xl bg-brand-dark px-3 py-2 text-xs font-bold text-brand-dark-foreground shadow-lg">
+                  <div className="rounded-xl bg-teal-dark px-3 py-2 text-xs font-bold text-teal-dark-foreground shadow-lg">
                     FoodFlow
                   </div>
 
@@ -509,7 +509,7 @@ export function ConfirmationPageContent() {
                   </div>
                 </div>
 
-                <div className="mt-2 h-2 w-72 rounded-full bg-brand/20" />
+                <div className="mt-2 h-2 w-72 rounded-full bg-teal/20" />
               </div>
             </div>
           </div>
@@ -539,7 +539,7 @@ export function ConfirmationPageContent() {
                   {RESTAURANT.name}
                 </h3>
 
-                <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
+                <span className="rounded-full bg-teal/10 px-3 py-1 text-xs font-bold text-teal">
                   Open
                 </span>
               </div>
@@ -603,7 +603,7 @@ export function ConfirmationPageContent() {
 
             <OrderMeta
               icon={
-                <span className="grid size-5 place-items-center rounded-full border border-brand text-xs font-bold text-brand">
+                <span className="grid size-5 place-items-center rounded-full border border-teal text-xs font-bold text-teal">
                   +
                 </span>
               }
@@ -662,7 +662,7 @@ export function ConfirmationPageContent() {
               You can also track your order in the{' '}
               <Link
                 href="#"
-                className="font-bold text-brand hover:underline"
+                className="font-bold text-teal hover:underline"
               >
                 “My Orders”
               </Link>{' '}
@@ -743,15 +743,15 @@ export function ConfirmationPageContent() {
               Total
             </span>
 
-            <span className="font-display text-xl font-extrabold text-brand">
+            <span className="font-display text-xl font-extrabold text-teal">
               {money(total)}
             </span>
           </div>
 
-          <div className="mt-4 flex items-start gap-3 rounded-lg border border-brand/15 bg-brand-muted px-3 py-3">
-            <ShieldCheck className="mt-0.5 size-5 shrink-0 text-brand" />
+          <div className="mt-4 flex items-start gap-3 rounded-lg border border-teal/15 bg-teal-muted px-3 py-3">
+            <ShieldCheck className="mt-0.5 size-5 shrink-0 text-teal" />
 
-            <div className="text-sm text-brand-dark">
+            <div className="text-sm text-teal-dark">
               <p className="font-bold">
                 You are saving {money(discount)}
               </p>
@@ -821,7 +821,7 @@ export function ConfirmationPageContent() {
                       onClick={() =>
                         addRecommendation(item)
                       }
-                      className="mt-2 flex w-full items-center justify-between rounded-lg border border-brand px-2.5 py-1.5 text-xs font-bold text-brand hover:bg-brand-muted"
+                      className="mt-2 flex w-full items-center justify-between rounded-lg border border-teal px-2.5 py-1.5 text-xs font-bold text-teal hover:bg-teal-muted"
                     >
                       <span>
                         {added > 0
@@ -829,7 +829,7 @@ export function ConfirmationPageContent() {
                           : 'Add'}
                       </span>
 
-                      <span className="grid size-5 place-items-center rounded-full border border-brand">
+                      <span className="grid size-5 place-items-center rounded-full border border-teal">
                         <span className="text-sm leading-none">
                           +
                         </span>
@@ -844,7 +844,7 @@ export function ConfirmationPageContent() {
       </section>
 
       {/* Bottom help cards */}
-      <section className="mt-5 rounded-xl border border-border bg-brand-muted/30 p-4 sm:p-5">
+      <section className="mt-5 rounded-xl border border-border bg-teal-muted/30 p-4 sm:p-5">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <HelpCard
             icon={
@@ -906,7 +906,7 @@ function ConfirmationStep({
         className={[
           'grid size-8 place-items-center rounded-full border text-xs font-bold sm:size-9 sm:text-sm',
           done || active
-            ? 'border-brand bg-brand text-brand-foreground'
+            ? 'border-teal bg-teal text-teal-foreground'
             : 'border-border bg-card text-foreground',
         ].join(' ')}
       >
@@ -929,7 +929,7 @@ function ConfirmationStep({
 
 function ConfirmationLine() {
   return (
-    <div className="mt-4 h-0.5 flex-1 rounded-full bg-brand" />
+    <div className="mt-4 h-0.5 flex-1 rounded-full bg-teal" />
   )
 }
 
@@ -955,7 +955,7 @@ function OrderMeta({
         !last ? 'border-b border-border' : '',
       ].join(' ')}
     >
-      <span className="text-brand">
+      <span className="text-teal">
         {icon}
       </span>
 
@@ -967,7 +967,7 @@ function OrderMeta({
         className={[
           'text-right text-sm font-semibold',
           accent
-            ? 'text-brand'
+            ? 'text-teal'
             : 'text-foreground',
         ].join(' ')}
       >
@@ -1011,7 +1011,7 @@ function SummaryRow({
       <span
         className={
           highlight
-            ? 'font-bold text-brand'
+            ? 'font-bold text-teal'
             : 'font-bold'
         }
       >
@@ -1044,7 +1044,7 @@ function HelpCard({
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="grid size-11 shrink-0 place-items-center rounded-full border border-brand/20 bg-card text-brand">
+      <div className="grid size-11 shrink-0 place-items-center rounded-full border border-teal/20 bg-card text-teal">
         {icon}
       </div>
 
@@ -1059,7 +1059,7 @@ function HelpCard({
 
         <button
           type="button"
-          className="mt-1 text-xs font-bold text-brand hover:underline"
+          className="mt-1 text-xs font-bold text-teal hover:underline"
         >
           {action}
         </button>
