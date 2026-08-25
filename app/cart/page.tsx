@@ -1,5 +1,5 @@
 import { HomeNavbar } from '@/components/home/home-navbar'
-import { Footer } from '@/components/layout/footer'
+import { SiteFooter } from '@/components/home/site-footer'
 import { CartPageContent } from '@/components/cart/cart-page-content'
 
 export default function CartPage() {
@@ -11,7 +11,7 @@ export default function CartPage() {
         <CartPageContent />
       </main>
 
-      <Footer />
+      <SiteFooter />
     </div>
   )
 }
