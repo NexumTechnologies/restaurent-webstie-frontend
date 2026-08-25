@@ -1,5 +1,5 @@
 import { HomeNavbar } from '@/components/home/home-navbar'
-import { Footer } from '@/components/layout/footer'
+import { SiteFooter } from '@/components/home/site-footer'
 import { PaymentPageContent } from '@/components/checkout/payment-page-content'
 
 export default function PaymentPage() {
@@ -11,7 +11,7 @@ export default function PaymentPage() {
         <PaymentPageContent />
       </main>
 
-      <Footer />
+      <SiteFooter />
     </div>
   )
 }
