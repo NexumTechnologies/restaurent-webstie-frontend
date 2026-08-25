@@ -1,0 +1,18 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "ibrar",
+    "main",
+    "rafay"
+  ],
+  "parent": {
+    "ibrar": "main",
+    "main": null,
+    "rafay": "main"
+  },
+  "order": [
+    "main",
+    "ibrar",
+    "rafay"
+  ]
+}

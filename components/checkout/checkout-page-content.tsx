@@ -169,7 +169,7 @@ function CheckoutStepper({
                   className={[
                     'grid size-8 place-items-center rounded-full border text-xs font-bold sm:size-9 sm:text-sm',
                     completed || active
-                      ? 'border-brand bg-brand text-brand-foreground'
+                      ? 'border-teal bg-teal text-teal-foreground'
                       : 'border-border bg-card text-foreground',
                   ].join(' ')}
                 >
@@ -197,7 +197,7 @@ function CheckoutStepper({
                   className={[
                     'mt-4 h-0.5 flex-1 rounded-full',
                     number < activeStep
-                      ? 'bg-brand'
+                      ? 'bg-teal'
                       : 'bg-border',
                   ].join(' ')}
                 />
@@ -238,7 +238,7 @@ function InputField({
       onChange={(event) =>
         onChange(event.target.value)
       }
-      className="mt-2 h-11 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15"
+      className="mt-2 h-11 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground outline-none transition focus:border-teal focus:ring-2 focus:ring-teal/15"
     />
   )
 }
@@ -483,7 +483,7 @@ export function CheckoutPageContent() {
       <CheckoutStepper activeStep={activeStep} />
 
       {/* Restaurant Banner */}
-      <section className="overflow-hidden rounded-xl border border-border bg-brand-muted/45">
+      <section className="overflow-hidden rounded-xl border border-border bg-teal-muted/45">
         <div className="flex flex-col gap-5 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
           <div className="flex min-w-0 items-center gap-4">
             <div className="size-[78px] shrink-0 overflow-hidden rounded-lg bg-black sm:size-[100px]">
@@ -500,7 +500,7 @@ export function CheckoutPageContent() {
                   {RESTAURANT.name}
                 </h1>
 
-                <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
+                <span className="rounded-full bg-teal/10 px-3 py-1 text-xs font-bold text-teal">
                   Open
                 </span>
               </div>
@@ -539,8 +539,8 @@ export function CheckoutPageContent() {
       </section>
 
       {submitted && (
-        <div className="mt-5 flex items-start gap-3 rounded-xl border border-brand/20 bg-brand-muted px-4 py-4 text-sm text-brand-dark">
-          <Check className="mt-0.5 size-5 shrink-0 text-brand" />
+        <div className="mt-5 flex items-start gap-3 rounded-xl border border-teal/20 bg-teal-muted px-4 py-4 text-sm text-teal-dark">
+          <Check className="mt-0.5 size-5 shrink-0 text-teal" />
 
           <div>
             <p className="font-bold">
@@ -562,7 +562,7 @@ export function CheckoutPageContent() {
           {/* Delivery Address */}
           <section className="rounded-xl border border-border bg-card p-4 sm:p-5">
             <div className="flex items-center gap-2">
-              <MapPin className="size-5 text-brand" />
+              <MapPin className="size-5 text-teal" />
 
               <h2 className="font-display text-lg font-extrabold sm:text-xl">
                 Delivery Address
@@ -661,7 +661,7 @@ export function CheckoutPageContent() {
                         event.target.value,
                       )
                     }
-                    className="mt-2 h-11 w-full appearance-none rounded-lg border border-border bg-card px-3 pr-9 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
+                    className="mt-2 h-11 w-full appearance-none rounded-lg border border-border bg-card px-3 pr-9 text-sm outline-none focus:border-teal focus:ring-2 focus:ring-teal/15"
                   >
                     <option>Lahore</option>
                     <option>Islamabad</option>
@@ -687,7 +687,7 @@ export function CheckoutPageContent() {
                         event.target.value,
                       )
                     }
-                    className="mt-2 h-11 w-full appearance-none rounded-lg border border-border bg-card px-3 pr-9 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
+                    className="mt-2 h-11 w-full appearance-none rounded-lg border border-border bg-card px-3 pr-9 text-sm outline-none focus:border-teal focus:ring-2 focus:ring-teal/15"
                   >
                     <option>Johar Town</option>
                     <option>Model Town</option>
@@ -738,7 +738,7 @@ export function CheckoutPageContent() {
                 }
                 placeholder="E.g. Please ring the bell, call on arrival, leave at gate, etc."
                 rows={3}
-                className="mt-2 w-full resize-none rounded-lg border border-border bg-card px-3 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-brand focus:ring-2 focus:ring-brand/15"
+                className="mt-2 w-full resize-none rounded-lg border border-border bg-card px-3 py-3 text-sm outline-none placeholder:text-muted-foreground focus:border-teal focus:ring-2 focus:ring-teal/15"
               />
             </div>
 
@@ -939,13 +939,13 @@ export function CheckoutPageContent() {
                 Total
               </span>
 
-              <span className="font-display text-xl font-extrabold text-brand">
+              <span className="font-display text-xl font-extrabold text-teal">
                 {money(total)}
               </span>
             </div>
 
-            <div className="mt-4 flex items-start gap-3 rounded-lg border border-brand/15 bg-brand-muted px-3 py-3 text-sm text-brand-dark">
-              <ShieldCheck className="mt-0.5 size-5 shrink-0 text-brand" />
+            <div className="mt-4 flex items-start gap-3 rounded-lg border border-teal/15 bg-teal-muted px-3 py-3 text-sm text-teal-dark">
+              <ShieldCheck className="mt-0.5 size-5 shrink-0 text-teal" />
 
               <div>
                 <p className="font-bold">
@@ -965,7 +965,7 @@ export function CheckoutPageContent() {
             <button
               type="button"
               onClick={proceedToPayment}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 py-3.5 text-sm font-extrabold text-brand-foreground transition hover:bg-brand/90"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-teal px-4 py-3.5 text-sm font-extrabold text-teal-foreground transition hover:bg-teal/90"
             >
               Proceed to Payment
               <ArrowRight className="size-4" />
@@ -980,7 +980,7 @@ export function CheckoutPageContent() {
           {/* Promo + Trust */}
           <section className="rounded-xl border border-border bg-card p-4 sm:p-5">
             <div className="flex items-center gap-2">
-              <span className="grid size-6 place-items-center rounded-full bg-brand-muted text-xs font-bold text-brand">
+              <span className="grid size-6 place-items-center rounded-full bg-teal-muted text-xs font-bold text-teal">
                 %
               </span>
 
@@ -996,13 +996,13 @@ export function CheckoutPageContent() {
                   setPromo(event.target.value)
                 }
                 placeholder="Enter promo code"
-                className="h-11 min-w-0 flex-1 rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
+                className="h-11 min-w-0 flex-1 rounded-lg border border-border bg-card px-3 text-sm outline-none focus:border-teal focus:ring-2 focus:ring-teal/15"
               />
 
               <button
                 type="button"
                 onClick={applyPromo}
-                className="h-11 rounded-lg border border-brand px-4 text-sm font-bold text-brand transition hover:bg-brand-muted"
+                className="h-11 rounded-lg border border-teal px-4 text-sm font-bold text-teal transition hover:bg-teal-muted"
               >
                 Apply
               </button>
@@ -1012,7 +1012,7 @@ export function CheckoutPageContent() {
               <p
                 className={`mt-2 text-xs ${
                   promoApplied
-                    ? 'text-brand'
+                    ? 'text-teal'
                     : 'text-red-500'
                 }`}
               >
@@ -1121,7 +1121,7 @@ function DeliveryOption({
       className={[
         'flex w-full items-center gap-3 rounded-lg border px-3 py-3 text-left transition',
         selected
-          ? 'border-brand bg-brand-muted/60'
+          ? 'border-teal bg-teal-muted/60'
           : 'border-border hover:bg-muted/60',
       ].join(' ')}
     >
@@ -1129,7 +1129,7 @@ function DeliveryOption({
         className={[
           'grid size-7 shrink-0 place-items-center rounded-full border',
           selected
-            ? 'border-brand text-brand'
+            ? 'border-teal text-teal'
             : 'border-border text-muted-foreground',
         ].join(' ')}
       >
@@ -1144,7 +1144,7 @@ function DeliveryOption({
         className={[
           'grid size-9 shrink-0 place-items-center rounded-full',
           selected
-            ? 'bg-brand text-brand-foreground'
+            ? 'bg-teal text-teal-foreground'
             : 'bg-muted text-foreground',
         ].join(' ')}
       >
@@ -1162,7 +1162,7 @@ function DeliveryOption({
       </span>
 
       {price && (
-        <span className="shrink-0 text-xs font-extrabold text-brand">
+        <span className="shrink-0 text-xs font-extrabold text-teal">
           {price}
         </span>
       )}
@@ -1198,7 +1198,7 @@ function PaymentOption({
       className={[
         'flex w-full items-center gap-3 rounded-lg border px-3 py-3 text-left transition',
         selected
-          ? 'border-brand bg-brand-muted/50'
+          ? 'border-teal bg-teal-muted/50'
           : 'border-border hover:bg-muted/60',
       ].join(' ')}
     >
@@ -1206,12 +1206,12 @@ function PaymentOption({
         className={[
           'grid size-6 place-items-center rounded-full border',
           selected
-            ? 'border-brand'
+            ? 'border-teal'
             : 'border-border',
         ].join(' ')}
       >
         {selected && (
-          <span className="size-2.5 rounded-full bg-brand" />
+          <span className="size-2.5 rounded-full bg-teal" />
         )}
       </span>
 
@@ -1219,7 +1219,7 @@ function PaymentOption({
         className={[
           'grid size-9 place-items-center rounded-full',
           selected
-            ? 'bg-brand text-brand-foreground'
+            ? 'bg-teal text-teal-foreground'
             : 'bg-muted',
         ].join(' ')}
       >
@@ -1266,7 +1266,7 @@ function SummaryRow({
       <span
         className={
           highlight
-            ? 'font-bold text-brand'
+            ? 'font-bold text-teal'
             : 'font-bold'
         }
       >
@@ -1289,7 +1289,7 @@ function TrustRow({
 }) {
   return (
     <div className="flex gap-3">
-      <span className="mt-0.5 shrink-0 text-brand">
+      <span className="mt-0.5 shrink-0 text-teal">
         {icon}
       </span>
 
@@ -1319,7 +1319,7 @@ function MiniBenefit({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="grid size-12 shrink-0 place-items-center rounded-full bg-brand-muted text-brand">
+      <span className="grid size-12 shrink-0 place-items-center rounded-full bg-teal-muted text-teal">
         {icon}
       </span>
 
