@@ -1,20 +1,8 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import { QueryProvider } from '@/components/providers/query-provider'
+import { ToastProvider } from '@/components/providers/toast-provider'
 import './globals.css'
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-})
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-jakarta',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   title: 'FoodFlow — Delicious Food Delivered To Your Door',
@@ -56,10 +44,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`light bg-background ${inter.variable} ${jakarta.variable}`}
+      className="light bg-background"
     >
       <body className="font-sans antialiased">
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </QueryProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
