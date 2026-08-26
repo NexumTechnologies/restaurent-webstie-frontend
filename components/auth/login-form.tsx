@@ -37,18 +37,6 @@ export function LoginForm() {
     const email = String(formData.get('email') ?? '')
     const password = String(formData.get('password') ?? '')
 
-    // Demo fallback for the system admin in local development
-    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@foodflow.com'
-    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123'
-
-    if (email === adminEmail && password === adminPassword) {
-      window.localStorage.setItem('foodflow_access_token', 'dummy_admin_token')
-      window.localStorage.setItem('foodflow_user', JSON.stringify({ role: 'admin', name: 'Admin' }))
-      router.push('/admin/dashboard')
-      router.refresh()
-      return
-    }
-
     loginMutation.mutate({
       email,
       password,
