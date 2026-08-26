@@ -1,25 +1,27 @@
-import { StatCard } from "@/components/admin/StatCard";
-import { OrdersChart } from "@/components/admin/OrdersChart";
-import { StatusBadge } from "@/components/admin/StatusBadge";
-import { Users, Store, ShoppingBag, DollarSign, ChevronRight, AlertTriangle, Info, CheckCircle2 } from "lucide-react";
+"use client";
+
 import Link from "next/link";
-import Image from "next/image";
-
-const recentOrders = [
-  { id: "#ORD-10284", customer: "Ali Khan", restaurant: "Burger House", amount: "PKR 1,250", status: "Delivered", time: "Today, 11:15 AM", icon: "🍔" },
-  { id: "#ORD-10283", customer: "Sara Malik", restaurant: "Pizza Point", amount: "PKR 950", status: "On The Way", time: "Today, 10:45 AM", icon: "🍕" },
-  { id: "#ORD-10282", customer: "Usman Ahmad", restaurant: "Spice Hub", amount: "PKR 1,100", status: "Preparing", time: "Today, 10:20 AM", icon: "🥘" },
-  { id: "#ORD-10281", customer: "Hira Butt", restaurant: "Pasta Express", amount: "PKR 850", status: "Delivered", time: "Today, 09:30 AM", icon: "🍝" },
-];
-
-const systemAlerts = [
-  { id: 1, title: "Low stock alert for 5 restaurants", time: "2 minutes ago", type: "warning", icon: AlertTriangle, color: "text-red-500" },
-  { id: 2, title: "3 restaurants pending verification", time: "15 minutes ago", type: "warning", icon: AlertTriangle, color: "text-orange-500" },
-  { id: 3, title: "Database backup completed", time: "Today, 02:00 AM", type: "info", icon: Info, color: "text-blue-500" },
-  { id: 4, title: "System is running smoothly", time: "Today, 12:00 AM", type: "success", icon: CheckCircle2, color: "text-green-500" },
-];
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import type { ComponentType } from "react";
+import { ChevronRight, AlertTriangle, Info, CheckCircle2, Users, Store, ShoppingBag, DollarSign } from "lucide-react";
+import { StatCard } from "@/components/admin/StatCard";
+import { StatusBadge } from "@/components/admin/StatusBadge";
+import { OrdersChart } from "@/components/admin/OrdersChart";
+import { getAdminDashboard } from "@/lib/api";
 
 export default function DashboardPage() {
+  const dashboardQuery = useQuery({
+    queryKey: ["admin-dashboard"],
+    queryFn: getAdminDashboard,
+  });
+
+  const dashboard = dashboardQuery.data;
+  const stats = dashboard?.stats ?? { customers: 0, restaurants: 0, orders: 0, revenue: 0 };
+  const recentOrders = dashboard?.recentOrders ?? [];
+  const alerts = dashboard?.alerts?.closedRestaurants ?? 0;
+  const chartData = useMemo(() => buildOrdersChart(recentOrders), [recentOrders]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -27,101 +29,73 @@ export default function DashboardPage() {
         <p className="text-gray-500">Welcome back, Admin! Here's what's happening in FoodFlow.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title="Total Customers"
-          value="3,782"
-          trend={{ value: "15.7%", isPositive: true, label: "from last week" }}
-          icon={Users}
-          iconBgColor="bg-purple-50"
-          iconColor="text-purple-600"
-        />
-        <StatCard
-          title="Total Restaurants"
-          value="156"
-          trend={{ value: "12.3%", isPositive: true, label: "from last week" }}
-          icon={Store}
-          iconBgColor="bg-orange-50"
-          iconColor="text-orange-600"
-        />
-        <StatCard
-          title="Total Orders"
-          value="1,284"
-          trend={{ value: "18.5%", isPositive: true, label: "from last week" }}
-          icon={ShoppingBag}
-          iconBgColor="bg-green-50"
-          iconColor="text-green-600"
-        />
-        <StatCard
-          title="Total Revenue"
-          value="PKR 1,843,560"
-          trend={{ value: "22.8%", isPositive: true, label: "from last week" }}
-          icon={DollarSign}
-          iconBgColor="bg-blue-50"
-          iconColor="text-blue-600"
-        />
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <StatCard title="Total Customers" value={stats.customers} trend={{ value: "Live from backend", isPositive: true, label: "" }} icon={Users} iconBgColor="bg-purple-50" iconColor="text-purple-600" />
+        <StatCard title="Total Restaurants" value={stats.restaurants} trend={{ value: "Live from backend", isPositive: true, label: "" }} icon={Store} iconBgColor="bg-orange-50" iconColor="text-orange-600" />
+        <StatCard title="Total Orders" value={stats.orders} trend={{ value: "Live from backend", isPositive: true, label: "" }} icon={ShoppingBag} iconBgColor="bg-green-50" iconColor="text-green-600" />
+        <StatCard title="Total Revenue" value={`PKR ${Number(stats.revenue).toLocaleString("en-PK")}`} trend={{ value: "Live from backend", isPositive: true, label: "" }} icon={DollarSign} iconBgColor="bg-blue-50" iconColor="text-blue-600" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-2">
+          <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-900">Orders Overview</h2>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-4 text-sm">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-0.5 bg-green-500 rounded-full"></div>
+                  <div className="h-0.5 w-3 rounded-full bg-green-500" />
                   <span className="text-gray-600">This Week</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-0.5 bg-gray-300 rounded-full border-dashed border-t-2 border-gray-300 bg-transparent"></div>
+                  <div className="h-0.5 w-3 rounded-full border-t-2 border-dashed border-gray-300 bg-transparent" />
                   <span className="text-gray-600">Last Week</span>
                 </div>
               </div>
-              <select className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 text-gray-700 bg-white outline-none">
+              <select className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 outline-none">
                 <option>This Week</option>
                 <option>Last Week</option>
                 <option>This Month</option>
               </select>
             </div>
           </div>
-          <OrdersChart />
+          <OrdersChart data={chartData} />
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">Quick Actions</h2>
           <div className="space-y-3">
             {[
-              { name: "Manage Users", icon: Users, color: "text-green-600", bg: "bg-green-50" },
-              { name: "Manage Restaurants", icon: Store, color: "text-green-600", bg: "bg-green-50" },
-              { name: "View Orders", icon: ShoppingBag, color: "text-green-600", bg: "bg-green-50" },
-              { name: "Reports", icon: AlertTriangle, color: "text-green-600", bg: "bg-green-50" },
+              { name: "Manage Users", href: "/admin/manage-users", icon: Users },
+              { name: "Manage Restaurants", href: "/admin/manage-restaurants", icon: Store },
+              { name: "View Orders", href: "/admin/view-orders", icon: ShoppingBag },
+              { name: "Reports", href: "/admin/reports", icon: AlertTriangle },
             ].map((action) => (
-              <button key={action.name} className="w-full flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:border-green-200 hover:bg-green-50/50 transition-colors group">
+              <Link key={action.name} href={action.href} className="flex items-center justify-between rounded-xl border border-gray-100 p-3 transition-colors hover:border-green-200 hover:bg-green-50/50 group">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-lg ${action.bg} flex items-center justify-center`}>
-                    <action.icon className={`w-5 h-5 ${action.color}`} />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-50">
+                    <action.icon className="h-5 w-5 text-green-600" />
                   </div>
                   <span className="font-medium text-gray-700 group-hover:text-gray-900">{action.name}</span>
                 </div>
-                <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-green-600" />
-              </button>
+                <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-green-600" />
+              </Link>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-2">
+          <div className="mb-6 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
-            <Link href="/admin/view-orders" className="text-sm font-medium text-green-600 hover:text-green-700 flex items-center gap-1">
-              View All Orders <ChevronRight className="w-4 h-4" />
+            <Link href="/admin/view-orders" className="flex items-center gap-1 text-sm font-medium text-green-600 hover:text-green-700">
+              View All Orders <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="text-gray-500 border-b border-gray-100">
+                <tr className="border-b border-gray-100 text-gray-500">
                   <th className="pb-3 font-medium">Order ID</th>
                   <th className="pb-3 font-medium">Customer</th>
                   <th className="pb-3 font-medium">Restaurant</th>
@@ -133,46 +107,98 @@ export default function DashboardPage() {
               <tbody className="divide-y divide-gray-50">
                 {recentOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="py-4 font-medium text-gray-900">{order.id}</td>
-                    <td className="py-4 text-gray-600">{order.customer}</td>
+                    <td className="py-4 font-medium text-gray-900">{order.orderNumber ?? order.id}</td>
+                    <td className="py-4 text-gray-600">{order.User?.name ?? "N/A"}</td>
+                    <td className="py-4 text-gray-900">{order.Restaurant?.name ?? "N/A"}</td>
+                    <td className="py-4 font-medium text-gray-900">{formatCurrency(order.total ?? 0)}</td>
                     <td className="py-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{order.icon}</span>
-                        <span className="font-medium text-gray-900">{order.restaurant}</span>
-                      </div>
+                      <StatusBadge status={prettyStatus(order.status) as any} />
                     </td>
-                    <td className="py-4 font-medium text-gray-900">{order.amount}</td>
-                    <td className="py-4">
-                      <StatusBadge status={order.status as any} />
-                    </td>
-                    <td className="py-4 text-gray-500">{order.time}</td>
+                    <td className="py-4 text-gray-500">{formatDate(order.createdAt)}</td>
                   </tr>
                 ))}
+                {!recentOrders.length ? (
+                  <tr>
+                    <td colSpan={6} className="py-10 text-center text-sm text-gray-500">
+                      {dashboardQuery.isLoading ? "Loading dashboard..." : "No recent orders found."}
+                    </td>
+                  </tr>
+                ) : null}
               </tbody>
             </table>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
+        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+          <div className="mb-6 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-900">System Alerts</h2>
             <button className="text-sm font-medium text-green-600 hover:text-green-700">View All</button>
           </div>
           <div className="space-y-6">
-            {systemAlerts.map((alert) => (
-              <div key={alert.id} className="flex gap-4">
-                <div className={`w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center shrink-0 border border-gray-100`}>
-                  <alert.icon className={`w-5 h-5 ${alert.color}`} />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{alert.title}</p>
-                  <p className="text-xs text-gray-500 mt-1">{alert.time}</p>
-                </div>
-              </div>
-            ))}
+            <AlertRow icon={AlertTriangle} color="text-orange-500" title={`${alerts} restaurants pending verification`} time="Live data" />
+            <AlertRow icon={Info} color="text-blue-500" title="Database backup ready" time="Use Backup & Restore" />
+            <AlertRow icon={CheckCircle2} color="text-green-500" title="System is running smoothly" time="Current status" />
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function AlertRow({ icon: Icon, color, title, time }: { icon: ComponentType<{ className?: string }>; color: string; title: string; time: string }) {
+  return (
+    <div className="flex gap-4">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-100 bg-gray-50">
+        <Icon className={`h-5 w-5 ${color}`} />
+      </div>
+      <div>
+        <p className="text-sm font-medium text-gray-900">{title}</p>
+        <p className="mt-1 text-xs text-gray-500">{time}</p>
+      </div>
+    </div>
+  );
+}
+
+function prettyStatus(status: string) {
+  return status.replace(/_/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+function formatDate(value?: string) {
+  if (!value) return "N/A";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+
+function formatCurrency(value: string | number) {
+  const numeric = Number(value);
+  if (Number.isNaN(numeric)) return String(value);
+  return `PKR ${numeric.toLocaleString("en-PK", { maximumFractionDigits: 2 })}`;
+}
+
+function buildOrdersChart(
+  orders: Array<{ createdAt?: string }>
+): Array<{ name: string; orders: number }> {
+  const today = new Date();
+  const keys = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - (6 - index));
+    date.setHours(0, 0, 0, 0);
+    return {
+      key: date.toISOString().slice(0, 10),
+      name: date.toLocaleDateString("en-US", { weekday: "short" }),
+      orders: 0,
+    };
+  });
+
+  for (const order of orders) {
+    if (!order.createdAt) continue;
+    const date = new Date(order.createdAt);
+    if (Number.isNaN(date.getTime())) continue;
+    const key = date.toISOString().slice(0, 10);
+    const bucket = keys.find((item) => item.key === key);
+    if (bucket) bucket.orders += 1;
+  }
+
+  return keys.map(({ name, orders: total }) => ({ name, orders: total }));
 }
