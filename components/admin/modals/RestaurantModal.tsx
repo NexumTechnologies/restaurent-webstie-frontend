@@ -2,15 +2,16 @@
 
 import type { ComponentType, FormEvent } from "react";
 import { useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { X, Upload, Image as ImageIcon, Sparkles } from "lucide-react";
-import { createRestaurant } from "@/lib/api";
+import { createRestaurant, updateAdminRestaurant, type AdminRestaurant } from "@/lib/api";
+import { useToast } from "@/components/providers/toast-provider";
 
 interface RestaurantModalProps {
   isOpen: boolean;
   onClose: () => void;
   mode: "add" | "edit";
-  initialData?: any;
+  initialData?: AdminRestaurant | null;
 }
 
 type FormState = {
@@ -42,19 +43,25 @@ const initialState: FormState = {
 export function RestaurantModal({ isOpen, onClose, mode, initialData }: RestaurantModalProps) {
   const [form, setForm] = useState<FormState>(initialState);
   const [message, setMessage] = useState("");
+  const [logoFileName, setLogoFileName] = useState("");
+  const [coverFileName, setCoverFileName] = useState("");
+  const queryClient = useQueryClient();
+  const { success, error } = useToast();
 
   useEffect(() => {
     if (!isOpen) return;
 
     setMessage("");
+    setLogoFileName("");
+    setCoverFileName("");
     if (mode === "edit" && initialData) {
       setForm({
         restaurantName: initialData.name ?? "",
-        ownerName: initialData.owner ?? "",
-        email: initialData.email ?? "",
+        ownerName: initialData.owner?.name ?? "",
+        email: initialData.owner?.email ?? "",
         password: "",
-        phone: initialData.phone ?? "",
-        address: initialData.location ?? "",
+        phone: initialData.owner?.phone ?? "",
+        address: initialData.address ?? "",
         city: initialData.city ?? "",
         description: initialData.description ?? "",
         openingTime: initialData.openingTime ?? "",
@@ -66,18 +73,60 @@ export function RestaurantModal({ isOpen, onClose, mode, initialData }: Restaura
   }, [initialData, isOpen, mode]);
 
   const createMutation = useMutation({
-    mutationFn: createRestaurant,
+    mutationFn: async () => {
+      if (mode === "edit" && initialData) {
+        return updateAdminRestaurant(initialData.id, {
+          restaurantName: form.restaurantName,
+          ownerName: form.ownerName,
+          email: form.email,
+          password: form.password || undefined,
+          phone: form.phone,
+          address: form.address,
+          city: form.city,
+          description: form.description,
+          openingTime: form.openingTime,
+          closingTime: form.closingTime,
+        });
+      }
+
+      return createRestaurant({
+        name: form.restaurantName,
+        ownerName: form.ownerName,
+        email: form.email,
+        password: form.password,
+        phone: form.phone,
+        address: form.address,
+        city: form.city,
+        description: form.description,
+        openingTime: form.openingTime,
+        closingTime: form.closingTime,
+      });
+    },
     onSuccess: (result) => {
-      const createdName = result.restaurant.name;
-      setMessage(`Created ${createdName} successfully.`);
-      window.localStorage.setItem(
-        "foodflow_last_restaurant_credentials",
-        JSON.stringify({
-          restaurantName: createdName,
-          email: result.credentials.email,
-        })
+      const payload = result as any;
+      const createdName = mode === "edit" ? payload.name : payload.restaurant.name;
+      setMessage(`${mode === "edit" ? "Updated" : "Created"} ${createdName} successfully.`);
+      success(
+        mode === "edit" ? "Restaurant updated" : "Restaurant created",
+        mode === "edit" ? `${createdName} was saved.` : `Owner login is ready for ${payload.credentials.email}.`
       );
+      if (mode !== "edit") {
+        window.localStorage.setItem(
+          "foodflow_last_restaurant_credentials",
+          JSON.stringify({
+            restaurantName: createdName,
+            email: payload.credentials.email,
+          })
+        );
+      }
+      queryClient.invalidateQueries({ queryKey: ["admin-restaurants"] });
+      if (mode === "edit" && initialData) {
+        queryClient.invalidateQueries({ queryKey: ["admin-restaurant", initialData.id] });
+      }
       setTimeout(() => onClose(), 650);
+    },
+    onError: (mutationError: Error) => {
+      error(mode === "edit" ? "Restaurant update failed" : "Restaurant creation failed", mutationError.message);
     },
   });
 
@@ -91,22 +140,11 @@ export function RestaurantModal({ isOpen, onClose, mode, initialData }: Restaura
     event.preventDefault();
 
     if (mode === "edit") {
-      onClose();
+      createMutation.mutate();
       return;
     }
 
-    createMutation.mutate({
-      name: form.restaurantName,
-      ownerName: form.ownerName,
-      email: form.email,
-      password: form.password,
-      phone: form.phone,
-      address: form.address,
-      city: form.city,
-      description: form.description,
-      openingTime: form.openingTime,
-      closingTime: form.closingTime,
-    });
+    createMutation.mutate();
   }
 
   return (
@@ -150,8 +188,20 @@ export function RestaurantModal({ isOpen, onClose, mode, initialData }: Restaura
               <Field label="Contact Number" value={form.phone} onChange={(value) => updateField("phone", value)} type="tel" placeholder="+92 300 1234567" />
 
               <div className="grid gap-4 sm:grid-cols-2">
-                <MediaUploadCard title="Logo Image" subtitle="PNG, JPG up to 2MB" icon={ImageIcon} />
-                <MediaUploadCard title="Cover Image" subtitle="16:9 aspect ratio recommended" icon={Upload} />
+                <MediaUploadCard
+                  title="Logo Image"
+                  subtitle={logoFileName || "PNG, JPG up to 2MB"}
+                  icon={ImageIcon}
+                  inputId="restaurant-logo-upload"
+                  onSelect={(file) => setLogoFileName(file.name)}
+                />
+                <MediaUploadCard
+                  title="Cover Image"
+                  subtitle={coverFileName || "16:9 aspect ratio recommended"}
+                  icon={Upload}
+                  inputId="restaurant-cover-upload"
+                  onSelect={(file) => setCoverFileName(file.name)}
+                />
               </div>
 
               <div className="rounded-3xl border border-emerald-100 bg-emerald-50/70 p-4">
@@ -253,18 +303,32 @@ function MediaUploadCard({
   title,
   subtitle,
   icon: Icon,
+  inputId,
+  onSelect,
 }: {
   title: string;
   subtitle: string;
   icon: ComponentType<{ className?: string }>;
+  inputId: string;
+  onSelect: (file: File) => void;
 }) {
   return (
-    <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-4 text-center transition hover:border-emerald-200 hover:bg-emerald-50/40">
+    <label htmlFor={inputId} className="block cursor-pointer rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-4 text-center transition hover:border-emerald-200 hover:bg-emerald-50/40">
       <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm">
         <Icon className="h-5 w-5" />
       </div>
       <p className="text-sm font-semibold text-slate-900">{title}</p>
       <p className="mt-1 text-xs text-slate-500">{subtitle}</p>
-    </div>
+      <input
+        id={inputId}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) onSelect(file);
+        }}
+      />
+    </label>
   );
 }

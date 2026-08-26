@@ -10,17 +10,12 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const data = [
-  { name: "18 May", predicted: 950 },
-  { name: "19 May", predicted: 1050 },
-  { name: "20 May", predicted: 1110 },
-  { name: "21 May", predicted: 1245 },
-  { name: "22 May", predicted: 1180 },
-  { name: "23 May", predicted: 1090 },
-  { name: "24 May", predicted: 1160 },
-];
+export type PredictionChartPoint = {
+  name: string;
+  predicted: number;
+};
 
-export function PredictionChart() {
+export function PredictionChart({ data }: { data: PredictionChartPoint[] }) {
   return (
     <div className="h-[300px] w-full mt-4">
       <ResponsiveContainer width="100%" height="100%">

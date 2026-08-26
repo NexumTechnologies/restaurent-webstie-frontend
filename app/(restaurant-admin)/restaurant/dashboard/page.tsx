@@ -1,46 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowUpRight,
   ChevronRight,
   Download,
   Plus,
   Sparkles,
-  Store,
+  ShoppingBag,
   Users,
   Wallet,
   Star,
 } from "lucide-react";
 import { StatCard } from "@/components/admin/StatCard";
 import { StatusBadge } from "@/components/admin/StatusBadge";
-
-const orders = [
-  { id: "#FF6825", customer: "Ali Khan", items: "2 items", amount: "PKR 780", status: "Preparing" },
-  { id: "#FF6824", customer: "Sara Ahmed", items: "3 items", amount: "PKR 1,250", status: "On The Way" },
-  { id: "#FF6823", customer: "Usman Shah", items: "1 item", amount: "PKR 420", status: "Delivered" },
-  { id: "#FF6822", customer: "Hira Malik", items: "4 items", amount: "PKR 1,890", status: "Delivered" },
-  { id: "#FF6821", customer: "Bilal Hassan", items: "2 items", amount: "PKR 650", status: "Cancelled" },
-];
-
-const salesData = [
-  { day: "Mon", value: 10800 },
-  { day: "Tue", value: 14900 },
-  { day: "Wed", value: 11200 },
-  { day: "Thu", value: 13800 },
-  { day: "Fri", value: 17600 },
-  { day: "Sat", value: 15400 },
-  { day: "Sun", value: 10900 },
-];
+import { OrdersChart } from "@/components/admin/OrdersChart";
+import { getRestaurantDashboard } from "@/lib/api";
 
 const topItems = [
   { name: "Zinger Burger", orders: 85, revenue: "PKR 595" },
@@ -58,37 +35,47 @@ const quickActions = [
 ];
 
 export default function RestaurantDashboardPage() {
+  const dashboardQuery = useQuery({
+    queryKey: ["restaurant-dashboard"],
+    queryFn: getRestaurantDashboard,
+  });
+
+  const dashboard = dashboardQuery.data;
+  const stats = dashboard?.stats ?? { orders: 0, revenue: 0, customers: 0, rating: null };
+  const recentOrders = dashboard?.recentOrders ?? [];
+  const chartData = useMemo(() => buildOrdersChart(recentOrders), [recentOrders]);
+
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Total Orders"
-          value="128"
-          trend={{ value: "+12% from yesterday", isPositive: true, label: "" }}
-          icon={Store}
+          value={stats.orders}
+          trend={{ value: "Live from backend", isPositive: true, label: "" }}
+          icon={ShoppingBag}
           iconBgColor="bg-emerald-50"
           iconColor="text-emerald-700"
         />
         <StatCard
           title="Total Revenue"
-          value="PKR 45,680"
-          trend={{ value: "+15% from yesterday", isPositive: true, label: "" }}
+          value={`PKR ${Number(stats.revenue).toLocaleString("en-PK")}`}
+          trend={{ value: "Live from backend", isPositive: true, label: "" }}
           icon={Wallet}
           iconBgColor="bg-blue-50"
           iconColor="text-blue-600"
         />
         <StatCard
           title="Total Customers"
-          value="96"
-          trend={{ value: "+8% from yesterday", isPositive: true, label: "" }}
+          value={stats.customers}
+          trend={{ value: "Live from backend", isPositive: true, label: "" }}
           icon={Users}
           iconBgColor="bg-orange-50"
           iconColor="text-orange-600"
         />
         <StatCard
           title="Average Rating"
-          value="4.6"
-          trend={{ value: "Based on 75 reviews", isPositive: true, label: "" }}
+          value={stats.rating ?? 0}
+          trend={{ value: "Live from backend", isPositive: true, label: "" }}
           icon={Star}
           iconBgColor="bg-violet-50"
           iconColor="text-violet-600"
@@ -117,17 +104,24 @@ export default function RestaurantDashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {orders.map((order) => (
+                {recentOrders.map((order) => (
                   <tr key={order.id} className="transition hover:bg-slate-50/70">
-                    <td className="py-4 font-semibold text-emerald-900">{order.id}</td>
-                    <td className="py-4 text-slate-700">{order.customer}</td>
-                    <td className="py-4 text-slate-600">{order.items}</td>
-                    <td className="py-4 font-medium text-slate-900">{order.amount}</td>
+                    <td className="py-4 font-semibold text-emerald-900">{order.orderNumber}</td>
+                    <td className="py-4 text-slate-700">{order.User?.name ?? "N/A"}</td>
+                    <td className="py-4 text-slate-600">{(order.OrderItems?.length ?? 0) || 1} item{(order.OrderItems?.length ?? 0) === 1 ? "" : "s"}</td>
+                    <td className="py-4 font-medium text-slate-900">{formatCurrency(order.total)}</td>
                     <td className="py-4">
-                      <StatusBadge status={order.status as any} />
+                      <StatusBadge status={prettyStatus(order.status) as any} />
                     </td>
                   </tr>
                 ))}
+                {!recentOrders.length ? (
+                  <tr>
+                    <td colSpan={5} className="py-10 text-center text-sm text-slate-500">
+                      {dashboardQuery.isLoading ? "Loading dashboard..." : "No recent orders found."}
+                    </td>
+                  </tr>
+                ) : null}
               </tbody>
             </table>
           </div>
@@ -135,7 +129,7 @@ export default function RestaurantDashboardPage() {
 
         <div className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-slate-900">Sales Overview</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Order Overview</h2>
             <select className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 outline-none">
               <option>This Week</option>
               <option>Last Week</option>
@@ -143,35 +137,19 @@ export default function RestaurantDashboardPage() {
             </select>
           </div>
 
-          <div className="mt-4 h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={salesData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#047857" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#047857" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#94a3b8" }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#94a3b8" }} tickFormatter={(value) => `${Number(value) / 1000}k`} />
-                <Tooltip formatter={(value: number) => [`PKR ${value.toLocaleString()}`, "Sales"]} contentStyle={{ borderRadius: "14px", border: "none", boxShadow: "0 20px 40px -12px rgb(15 23 42 / 0.25)" }} />
-                <Area type="monotone" dataKey="value" stroke="#047857" strokeWidth={2.5} fill="url(#salesGradient)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <OrdersChart data={chartData} />
 
           <div className="mt-3 flex items-center justify-between rounded-2xl bg-emerald-50 px-4 py-3">
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-emerald-700">Total Sales</p>
-              <p className="text-xl font-semibold text-slate-900">PKR 95,420</p>
+              <p className="text-xl font-semibold text-slate-900">{formatCurrency(stats.revenue)}</p>
             </div>
             <div className="text-right">
               <div className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-700">
                 <ArrowUpRight className="h-4 w-4" />
-                14%
+                Live
               </div>
-              <p className="text-xs text-slate-500">vs last week</p>
+              <p className="text-xs text-slate-500">from backend</p>
             </div>
           </div>
         </div>
@@ -191,7 +169,7 @@ export default function RestaurantDashboardPage() {
             {topItems.map((item, index) => (
               <div key={item.name} className="flex items-center gap-3 rounded-2xl border border-slate-100 px-3 py-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-lg">
-                  {index === 0 ? "BH" : index + 1}
+                  {index + 1}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="font-medium text-slate-900">{item.name}</p>
@@ -214,7 +192,7 @@ export default function RestaurantDashboardPage() {
           <div className="mt-4 rounded-3xl border border-emerald-100 bg-emerald-50/70 p-4">
             <p className="text-sm font-semibold text-emerald-900">High Demand Expected</p>
             <p className="mt-1 text-xs text-slate-600">Tomorrow (Wednesday)</p>
-            <p className="mt-2 text-sm text-slate-600">Expected increase of 18% in total orders.</p>
+            <p className="mt-2 text-sm text-slate-600">Expected increase based on recent order history.</p>
           </div>
 
           <div className="mt-5 space-y-3">
@@ -270,4 +248,41 @@ export default function RestaurantDashboardPage() {
       </div>
     </div>
   );
+}
+
+function buildOrdersChart(
+  orders: Array<{ createdAt?: string }>
+): Array<{ name: string; orders: number }> {
+  const today = new Date();
+  const days = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - (6 - index));
+    date.setHours(0, 0, 0, 0);
+    return {
+      key: date.toISOString().slice(0, 10),
+      name: date.toLocaleDateString("en-US", { weekday: "short" }),
+      orders: 0,
+    };
+  });
+
+  for (const order of orders) {
+    if (!order.createdAt) continue;
+    const date = new Date(order.createdAt);
+    if (Number.isNaN(date.getTime())) continue;
+    const key = date.toISOString().slice(0, 10);
+    const bucket = days.find((day) => day.key === key);
+    if (bucket) bucket.orders += 1;
+  }
+
+  return days.map(({ name, orders: total }) => ({ name, orders: total }));
+}
+
+function prettyStatus(status: string) {
+  return status.replace(/_/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+function formatCurrency(value: string | number) {
+  const numeric = Number(value);
+  if (Number.isNaN(numeric)) return String(value);
+  return `PKR ${numeric.toLocaleString("en-PK", { maximumFractionDigits: 2 })}`;
 }
