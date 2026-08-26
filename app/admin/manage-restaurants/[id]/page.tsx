@@ -1,36 +1,83 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, MapPin, Clock, Phone, Mail, Star, TrendingUp, ShoppingBag, DollarSign } from "lucide-react";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ComponentType } from "react";
+import { ArrowLeft, MapPin, Clock, Phone, Mail, Star, TrendingUp, ShoppingBag, DollarSign, CheckCircle2, XCircle } from "lucide-react";
 import { StatCard } from "@/components/admin/StatCard";
-import { StatusBadge } from "@/components/admin/StatusBadge";
+import { RestaurantModal } from "@/components/admin/modals/RestaurantModal";
+import { activateAdminRestaurant, approveAdminRestaurant, deactivateAdminRestaurant, deleteAdminRestaurant, getAdminRestaurant, rejectAdminRestaurant, type AdminRestaurant } from "@/lib/api";
+import { useToast } from "@/components/providers/toast-provider";
 
 export default function RestaurantDetailPage({ params }: { params: { id: string } }) {
-  // Mock data for the restaurant
-  const restaurant = {
-    id: params.id,
-    name: "Burger House",
-    owner: "John Smith",
-    email: "john.smith@burgerhouse.com",
-    phone: "+91 98765 43210",
-    location: "123 Main St, City Center",
-    openingTime: "10:00 AM",
-    closingTime: "10:00 PM",
-    description: "The best burgers in town, made with fresh ingredients and love.",
-    joined: "12 May 2024",
-    approval: "Approved",
-    status: "Active",
-    rating: 4.8,
-    reviews: 124,
-    coverImage: "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1000&auto=format&fit=crop",
-    logo: "🍔"
-  };
+  const queryClient = useQueryClient();
+  const { success, error } = useToast();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const restaurantQuery = useQuery({
+    queryKey: ["admin-restaurant", params.id],
+    queryFn: () => getAdminRestaurant(params.id),
+  });
+
+  const restaurant = restaurantQuery.data;
+
+  const actionMutation = useMutation({
+    mutationFn: async (input: { action: "approve" | "reject" | "activate" | "deactivate" | "delete"; reason?: string }) => {
+      switch (input.action) {
+        case "approve":
+          return approveAdminRestaurant(params.id);
+        case "reject":
+          return rejectAdminRestaurant(params.id, input.reason || "Not specified");
+        case "activate":
+          return activateAdminRestaurant(params.id);
+        case "deactivate":
+          return deactivateAdminRestaurant(params.id);
+        case "delete":
+          return deleteAdminRestaurant(params.id);
+      }
+    },
+    onSuccess: (_, input) => {
+      const messages = {
+        approve: "Restaurant approved",
+        reject: "Restaurant rejected",
+        activate: "Restaurant activated",
+        deactivate: "Restaurant deactivated",
+        delete: "Restaurant deleted",
+      } as const;
+      success(messages[input.action], restaurant?.name ?? "Restaurant");
+      queryClient.invalidateQueries({ queryKey: ["admin-restaurant", params.id] });
+      queryClient.invalidateQueries({ queryKey: ["admin-restaurants"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
+    },
+    onError: (mutationError: Error) => error("Restaurant action failed", mutationError.message),
+  });
+
+  if (restaurantQuery.isLoading) {
+    return <div className="rounded-2xl border border-gray-100 bg-white p-6 text-sm text-gray-500">Loading restaurant...</div>;
+  }
+
+  if (!restaurant) {
+    return (
+      <div className="space-y-4">
+        <Link href="/admin/manage-restaurants" className="inline-flex items-center gap-2 text-green-700 hover:text-green-800">
+          <ArrowLeft className="h-4 w-4" />
+          Back to restaurants
+        </Link>
+        <div className="rounded-2xl border border-gray-100 bg-white p-6 text-sm text-gray-500">Restaurant not found.</div>
+      </div>
+    );
+  }
+
+  const owner = restaurant.owner;
+  const isOpen = restaurant.isOpen !== false;
+  const approval = restaurant.approvalStatus ?? "pending";
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link href="/admin/manage-restaurants" className="p-2 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-          <ArrowLeft className="w-5 h-5 text-gray-600" />
+        <Link href="/admin/manage-restaurants" className="rounded-xl border border-gray-200 bg-white p-2 transition-colors hover:bg-gray-50">
+          <ArrowLeft className="h-5 w-5 text-gray-600" />
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Restaurant Details</h1>
@@ -38,103 +85,97 @@ export default function RestaurantDetailPage({ params }: { params: { id: string 
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="h-48 w-full bg-gray-200 relative">
-          <img src={restaurant.coverImage} alt="Cover" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div className="relative h-56 w-full bg-gray-200">
+          {restaurant.coverUrl ? <img src={restaurant.coverUrl} alt={restaurant.name} className="h-full w-full object-cover" /> : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         </div>
-        
-        <div className="px-8 pb-8 relative">
-          <div className="flex flex-col md:flex-row gap-6 items-start md:items-end -mt-12 mb-6">
-            <div className="w-24 h-24 rounded-2xl bg-white border-4 border-white shadow-lg flex items-center justify-center text-4xl shrink-0 z-10">
-              {restaurant.logo}
+
+        <div className="relative px-8 pb-8">
+          <div className="mt-[-3rem] flex flex-col gap-6 md:flex-row md:items-end">
+            <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-white shadow-lg">
+              {restaurant.logoUrl ? <img src={restaurant.logoUrl} alt={restaurant.name} className="h-full w-full object-cover" /> : <span className="text-4xl font-bold text-green-700">{restaurant.name.charAt(0)}</span>}
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-1">
+              <div className="mb-1 flex flex-wrap items-center gap-3">
                 <h2 className="text-2xl font-bold text-gray-900">{restaurant.name}</h2>
-                <StatusBadge status={restaurant.status as any} />
-                <StatusBadge status={restaurant.approval as any} />
+                <Pill tone={approval === "approved" ? "success" : approval === "rejected" ? "danger" : "warning"} label={approval} />
+                <Pill tone={isOpen ? "success" : "danger"} label={isOpen ? "active" : "inactive"} />
               </div>
-              <p className="text-gray-500">{restaurant.description}</p>
+              <p className="text-gray-500">{restaurant.description ?? "No description available."}</p>
             </div>
             <div className="flex gap-3">
-              <button className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors">
-                Suspend Account
+              <button onClick={() => actionMutation.mutate({ action: isOpen ? "deactivate" : "activate" })} className="rounded-xl border border-gray-200 bg-white px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50">
+                {isOpen ? "Deactivate" : "Activate"}
               </button>
-              <button className="px-4 py-2 bg-green-700 text-white rounded-xl font-medium hover:bg-green-800 transition-colors">
+              <button onClick={() => setIsModalOpen(true)} className="rounded-xl bg-green-700 px-4 py-2 font-medium text-white transition-colors hover:bg-green-800">
                 Edit Details
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-6 border-t border-gray-100">
-            <div className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">Location</p>
-                <p className="text-sm text-gray-500">{restaurant.location}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Clock className="w-5 h-5 text-gray-400 mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">Timings</p>
-                <p className="text-sm text-gray-500">{restaurant.openingTime} - {restaurant.closingTime}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">Contact</p>
-                <p className="text-sm text-gray-500">{restaurant.phone}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Mail className="w-5 h-5 text-gray-400 mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">Email</p>
-                <p className="text-sm text-gray-500">{restaurant.email}</p>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 gap-6 border-t border-gray-100 py-6 pt-6 md:grid-cols-2 lg:grid-cols-4">
+            <InfoBlock icon={MapPin} label="Location" value={`${restaurant.address ?? "N/A"}${restaurant.city ? `, ${restaurant.city}` : ""}`} />
+            <InfoBlock icon={Clock} label="Timings" value={`${fmtTime(restaurant.openingTime)} - ${fmtTime(restaurant.closingTime)}`} />
+            <InfoBlock icon={Phone} label="Contact" value={owner?.phone ?? "N/A"} />
+            <InfoBlock icon={Mail} label="Email" value={owner?.email ?? "N/A"} />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 border-t border-gray-100 pt-5">
+            {approval === "pending" ? (
+              <>
+                <button onClick={() => actionMutation.mutate({ action: "approve" })} className="rounded-xl bg-green-700 px-4 py-2 font-medium text-white transition-colors hover:bg-green-800">
+                  Approve
+                </button>
+                <button
+                  onClick={() => {
+                    const reason = window.prompt(`Why is ${restaurant.name} being rejected?`, "Incomplete details");
+                    if (reason) actionMutation.mutate({ action: "reject", reason });
+                  }}
+                  className="rounded-xl border border-red-200 bg-white px-4 py-2 font-medium text-red-600 transition-colors hover:bg-red-50"
+                >
+                  Reject
+                </button>
+              </>
+            ) : null}
+            <button onClick={() => actionMutation.mutate({ action: "delete" })} className="rounded-xl border border-gray-200 bg-white px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-red-50 hover:text-red-600">
+              Delete Restaurant
+            </button>
           </div>
         </div>
       </div>
 
-      <h2 className="text-lg font-bold text-gray-900 mt-8 mb-4">Performance Metrics</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard
-          title="Total Orders"
-          value="1,248"
-          trend={{ value: "12% from last month", isPositive: true, label: "" }}
-          icon={ShoppingBag}
-          iconBgColor="bg-blue-50"
-          iconColor="text-blue-600"
-        />
-        <StatCard
-          title="Total Revenue"
-          value="PKR 450,000"
-          trend={{ value: "8% from last month", isPositive: true, label: "" }}
-          icon={DollarSign}
-          iconBgColor="bg-green-50"
-          iconColor="text-green-600"
-        />
-        <StatCard
-          title="Average Rating"
-          value={restaurant.rating}
-          trend={{ value: `${restaurant.reviews} reviews`, isPositive: true, label: "" }}
-          icon={Star}
-          iconBgColor="bg-yellow-50"
-          iconColor="text-yellow-600"
-        />
-        <StatCard
-          title="Growth"
-          value="+15%"
-          trend={{ value: "Steady growth", isPositive: true, label: "" }}
-          icon={TrendingUp}
-          iconBgColor="bg-purple-50"
-          iconColor="text-purple-600"
-        />
+      <h2 className="mb-4 mt-8 text-lg font-bold text-gray-900">Performance Metrics</h2>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <StatCard title="Total Orders" value="0" trend={{ value: "Coming soon", isPositive: true, label: "" }} icon={ShoppingBag} iconBgColor="bg-blue-50" iconColor="text-blue-600" />
+        <StatCard title="Total Revenue" value="PKR 0" trend={{ value: "Coming soon", isPositive: true, label: "" }} icon={DollarSign} iconBgColor="bg-green-50" iconColor="text-green-600" />
+        <StatCard title="Average Rating" value="0.0" trend={{ value: "No reviews yet", isPositive: true, label: "" }} icon={Star} iconBgColor="bg-yellow-50" iconColor="text-yellow-600" />
+        <StatCard title="Growth" value="0%" trend={{ value: "Coming soon", isPositive: true, label: "" }} icon={TrendingUp} iconBgColor="bg-purple-50" iconColor="text-purple-600" />
+      </div>
+
+      <RestaurantModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} mode="edit" initialData={restaurant as AdminRestaurant} />
+    </div>
+  );
+}
+
+function InfoBlock({ icon: Icon, label, value }: { icon: ComponentType<{ className?: string }>; label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <Icon className="mt-0.5 h-5 w-5 text-gray-400" />
+      <div>
+        <p className="text-sm font-medium text-gray-900">{label}</p>
+        <p className="text-sm text-gray-500">{value}</p>
       </div>
     </div>
   );
+}
+
+function Pill({ tone, label }: { tone: "success" | "warning" | "danger"; label: string }) {
+  const classes = tone === "success" ? "bg-green-50 text-green-700" : tone === "warning" ? "bg-yellow-50 text-yellow-700" : "bg-red-50 text-red-700";
+  return <span className={`rounded-md px-2.5 py-1 text-xs font-medium capitalize ${classes}`}>{label}</span>;
+}
+
+function fmtTime(value?: string | null) {
+  if (!value) return "N/A";
+  return value.length <= 5 ? value : value;
 }
